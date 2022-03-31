@@ -1,4 +1,5 @@
 backend/airbus_env/
 backend/.flaskenv
+backend/.env
 
 frontend/node_modules

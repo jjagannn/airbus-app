@@ -4,28 +4,7 @@ from os import environ
 from pymongo import MongoClient
 import hashlib
 import datetime
-# from flask import jsonify
 from flask_jwt_extended import create_access_token, JWTManager, jwt_required, get_jwt_identity, unset_jwt_cookies, get_jwt  
-# from bson.objectid import ObjectId
-# from werkzeug.security import generate_password_hash, check_password_hash
-# import pandas as pd
-# from bson.codec_options import CodecOptions
-# import pytz
-# Initialize flask app for the example
-# app.debug = True
-# app.config['SECRET_KEY'] = 'top secret'
-# app.config['JWT_ACCESS_LIFESPAN'] = {'hours': 24}
-# app.config['JWT_REFRESH_LIFESPAN'] = {'days': 30}
-# #app.config["MONGO_URI"] = "mongodb://localhost:27017/cricket_analysis"
-# app.config["MONGO_URI"] = "mongodb+srv://jagan-admin:Indial00p$@cluster0.wough.mongodb.net/airbus?retryWrites=true&w=majority"
-# #"mongodb+srv://jagan-admin:Indial00ps@cluster0.wough.mongodb.net/cricket_analysis"
-# mongodb_client = PyMongo(app)
-# #mongodb_client = PyMongo(app, ssl_cert_reqs=ssl.CERT_NONE)
-# #print(mongodb_client)
-# #Database initialization
-# db = mongodb_client.db
-# # Initializes CORS so that the api_tool can talk to the example app
-
 import os
 import flask
 from flask import request, jsonify
