@@ -48,7 +48,8 @@ const BoardUser = () => {
     };
     
     const addProduct = (product_info) => {
-      UserService.add_Product(product_info).then(
+      UserService.add_Product(product_info)
+      .then(
         () => {
           setId("");
           setProductName("");
@@ -56,7 +57,10 @@ const BoardUser = () => {
           setProductCat("");
           setUnits("");
           window.location.reload();
-        }
+        },
+        err => {
+          alert("Product ID already exists!")
+      }
         )
       };
 // Add user submit handling
