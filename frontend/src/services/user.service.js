@@ -18,6 +18,10 @@ const add_Product = (product_info) => {
     return axios.post(API_URL+ "addProduct", product_info)
 }
 
+const update_Product = (product_info) => {
+    return axios.put(API_URL+ "updateProduct", product_info)
+}
+
 const getModeratorBoard = () => {
     return axios.get(API_URL + "mod");
 };
@@ -27,7 +31,7 @@ const getAdminBoard = () => {
 };
 
 const UserService = {
-    getPublicContent, getUserBoard, getModeratorBoard, getAdminBoard, deleteProduct, add_Product,
+    getPublicContent, getUserBoard, getModeratorBoard, getAdminBoard, deleteProduct, add_Product,update_Product,
 };
 
 export default UserService;

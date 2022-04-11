@@ -76,7 +76,13 @@ class NoSQLAPI:
 
     def delete_user(self, id):
         collection_products.delete_one({'product_id': id})
-        resp = jsonify('User deleted successfully!')
+        resp = jsonify('Product deleted successfully!')
+        resp.status_code = 200
+        return resp
+
+    def update_product(self, clean_data):
+        collection_products.update_one({'product_id': id})
+        resp = jsonify('Product updated successfully!')
         resp.status_code = 200
         return resp
 

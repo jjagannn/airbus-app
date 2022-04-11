@@ -2,7 +2,7 @@
 import logging
 from crypt import methods
 from distutils.log import debug
-from flask import request, Flask, jsonify
+from flask import request, Flask, jsonify, make_response
 from pymongo import MongoClient
 import hashlib
 import datetime
@@ -10,8 +10,10 @@ from flask_jwt_extended import create_access_token, JWTManager, jwt_required, ge
 from bson.json_util import dumps
 from functools import wraps
 from os import environ
+from flask_swagger_ui import get_swaggerui_blueprint
 # import jwt
 from .nosql_api import NoSQLAPI
+
 
 #Flask app instance creation
 app = Flask(__name__,instance_relative_config= True)
@@ -30,6 +32,21 @@ db = client["airbus"]
 collection_products = db["products"]
 collection_users = db["users"]
 
+@app.route("/static/<path:path>")
+def send_static(path):
+    return send_from_directory("static", path)
+
+SWAGGER_URL="/swagger"
+API_URL="../static/swagger.json"
+swaggerui_blueprint = get_swaggerui_blueprint(
+    SWAGGER_URL, API_URL, config={
+        "app_name": "Jagans-Python-Flask-RESTAPI"
+    }
+)
+app.register_blueprint(swaggerui_blueprint, url_prefix=SWAGGER_URL)
+
+# app.register_blueprint(api())
+
 @app.route("/api/public", methods=["GET"])
 def common():
     return nosql_api.common()
@@ -37,6 +54,8 @@ def common():
 @app.route("/api/auth/register", methods=["POST"])
 def register():
     new_user = request.get_json()
+    print(new_user)
+    logging.warning(new_user)
     return nosql_api.register(new_user)
 
 @app.route("/api/auth/login", methods=["POST"])
@@ -72,6 +91,19 @@ def add_product():
     }
     return nosql_api.add_product(clean_data)
 
+@app.route('/api/updateProduct', methods=['PUT'])
+@jwt_required(optional=True)
+def update_product():
+    product_data = request.get_json()
+    clean_data = {
+        "product_id": product_data["id"],
+        "product_name": product_data["productName"],
+        "product_category": product_data["productCat"],
+        "product_description": product_data["productDescr"],
+        "units": product_data["units"]
+    }
+    return nosql_api.update_product(clean_data)
+
 @app.errorhandler(404)
 def not_found(error=None):
     message = {
@@ -82,6 +114,21 @@ def not_found(error=None):
     resp.status_code = 404
 
     return resp
+
+@app.errorhandler(400)
+def handle_400_error(_error):
+    """Return a http 400 error to client"""
+    return make_response(jsonify({'error': 'Misunderstood'}), 400)
+
+@app.errorhandler(401)
+def handle_401_error(_error):
+    """Return a http 401 error to client"""
+    return make_response(jsonify({'error': 'Unauthorised'}), 401)
+
+@app.errorhandler(500)
+def handle_500_error(_error):
+    """Return a http 500 error to client"""
+    return make_response(jsonify({'error': 'Server error'}), 500)
 
 # @app.after_request
 # def refresh_expiring_jwts(response):

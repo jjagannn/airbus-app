@@ -4,6 +4,8 @@ backend/.env
 
 frontend/node_modules
 
+Airbus-testing.postman_collection.json
+
 # Created by https://www.toptal.com/developers/gitignore/api/macos,angular,flask,python
 # Edit at https://www.toptal.com/developers/gitignore?templates=macos,angular,flask,python
 

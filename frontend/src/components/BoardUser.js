@@ -27,16 +27,19 @@ const BoardUser = () => {
       }
       )
     }
-  const updateProduct = (product_id) => {
-    UserService.updateProduct(product_id).then(
-      () => {
-        window.location.reload();
-      }
-      )
-    }
+  // const updateProduct = (product_id) => {
+  //   UserService.updateProduct(product_id).then(
+  //     () => {
+  //       window.location.reload();
+  //     }
+  //     )
+  //   }
     const [show, setShow] = useState(false);
+    const [showUpdateModal, setShowUpdateModal] = useState(false);
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
+    const handleCloseUpdateModal = () => setShowUpdateModal(false);
+    const handleShowUpdateModal = () => setShowUpdateModal(true);
     const [id, setId] = useState("");
     const [productName, setProductName] = useState("");
     const [productCat, setProductCat] = useState("");
@@ -63,12 +66,36 @@ const BoardUser = () => {
       }
         )
       };
+
+      const updateProduct = (product_info) => {
+        UserService.update_Product(product_info)
+        .then(
+          () => {
+            setId("");
+            setProductName("");
+            setProductDescr("");
+            setProductCat("");
+            setUnits("");
+            window.location.reload();
+          },
+          err => {
+            alert("Error updating the product")
+        }
+          )
+        };
 // Add user submit handling
     const handleSubmit = (e) => {
       e.preventDefault();
       const itemData = {id, productName, productCat, productDescr, units};
       console.log(itemData);
       addProduct(itemData);
+      handleClose();
+    };
+    const handleSubmitUpdateModal = (e) => {
+      e.preventDefault();
+      const itemData = {id, productName, productCat, productDescr, units};
+      console.log(itemData);
+      updateProduct(itemData);
       handleClose();
     };
     const [query, setQuery] = useState("");
@@ -92,7 +119,7 @@ const BoardUser = () => {
       <th scope="col">Product Name</th>
       <th scope="col">Product Description</th>
       <th scope="col">Units</th>
-      <th scope="col">Action</th>
+      <th scope="col">Action (Update or Delete record)</th>
     </tr>
 
   </thead>
@@ -132,6 +159,41 @@ const BoardUser = () => {
         </Modal.Footer>
         </Modal>
 
+{/* Update product modal */}
+        <Modal show={showUpdateModal} onHide={handleCloseUpdateModal}>
+        <Modal.Header closeButton>
+          <Modal.Title>Update product</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+        
+          <Form.Group className="mb-3">
+            <Form.Label>Product ID</Form.Label>
+            <Form.Control required value={id} onChange={(e) => setId(e.target.value)} placeholder="Enter product id"/>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Product Category</Form.Label>
+            <Form.Control required value={productCat} onChange={(e) => setProductCat(e.target.value)} placeholder="Enter product category"/>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Product Name</Form.Label>
+            <Form.Control required value={productName} onChange={(e) => setProductName(e.target.value)} placeholder="Enter product name"/>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Product Description</Form.Label>
+            <Form.Control required value={productDescr} onChange={(e) => setProductDescr(e.target.value)} placeholder="Enter product description"/>
+          </Form.Group>
+          <Form.Group className="mb-3">
+            <Form.Label>Units</Form.Label>
+            <Form.Control required value={units} onChange={(e) => setUnits(e.target.value)} placeholder="Enter the number of units"/>
+          </Form.Group>
+
+        </Modal.Body>
+        <Modal.Footer>
+          <Button variant="secondary" onClick={handleCloseUpdateModal}>Close</Button>
+          <Button variant="primary" onClick={handleSubmitUpdateModal} disabled={!validateForm()}>Submit</Button>
+        </Modal.Footer>
+        </Modal>
+
 {/* Searchbar */}
         <tr>
           <td>
@@ -148,7 +210,8 @@ const BoardUser = () => {
           <td>{item.product_description}</td>
           <td>{item.units}</td>
           <td>
-            {/* <button type="button" onClick={()=>{updateProduct(item.product_id)}}>Update</button> */}
+            <button type="button" onClick={handleShowUpdateModal}>Update</button>
+            &nbsp;&nbsp;&nbsp;
             <button type="button" onClick={()=>{deleteProduct(item.product_id)}}>Delete</button>
           </td>
         </tr>
